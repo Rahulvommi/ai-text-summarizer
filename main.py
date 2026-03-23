@@ -11,7 +11,7 @@ from collections import Counter
 import re
 
 def summarize_text(text, num_sentences=3):
-    parser = PlaintextParser.from_string(text, Tokenizer("english"))
+    parser = PlaintextParser.from_string(text, Tokenizer("en"))
     summarizer = LsaSummarizer()
 
     summary = summarizer(parser.document, num_sentences)
@@ -36,8 +36,6 @@ def generate_title(text):
     sentences = text.split(".")
     return sentences[0][:60] + "..."
 
-
-# 🔹 HUMANIZE FUNCTION (PASTE HERE)
 def humanize_text(text):
     replacements = {
         "However": "But",
