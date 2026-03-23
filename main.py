@@ -11,7 +11,7 @@ from collections import Counter
 import re
 
 def summarize_text(text, num_sentences=3):
-    parser = PlaintextParser.from_string(text, Tokenizer("en"))
+    parser = PlaintextParser.from_string(text, Tokenizer("english"))
     summarizer = LsaSummarizer()
 
     summary = summarizer(parser.document, num_sentences)
