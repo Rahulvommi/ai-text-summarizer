@@ -1,7 +1,5 @@
 import nltk
-
-nltk.download('punkt', quiet=True)
-nltk.download('punkt_tab', quiet=True)
+nltk.download('punkt')
 
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
@@ -10,7 +8,8 @@ from sumy.summarizers.lsa import LsaSummarizer
 from collections import Counter
 import re
 
-def summarize_text(text, num_sentences=3):
+
+def summarize_text(text, num_sentences):
     parser = PlaintextParser.from_string(text, Tokenizer("english"))
     summarizer = LsaSummarizer()
 
@@ -35,6 +34,8 @@ def generate_title(text):
 def generate_title(text):
     sentences = text.split(".")
     return sentences[0][:60] + "..."
+
+
 
 def humanize_text(text):
     replacements = {
