@@ -88,7 +88,7 @@ with col1:
     summary_type = st.selectbox("Length", ["Short", "Medium", "Detailed"])
 
 with col2:
-    humanize = st.checkbox("Refine tone")
+    humanize = st.checkbox("Plagarism 0")
 
 with col3:
     run = st.button("Generate")
