@@ -1,4 +1,5 @@
 import nltk
+import nltk_data
 
 try:
     nltk.data.find('tokenizers/punkt')
