@@ -2,38 +2,75 @@ import streamlit as st
 from main import summarize_text, extract_keywords, generate_title, humanize_text
 import PyPDF2
 
-st.set_page_config(page_title="AI Text Summarizer", page_icon="🧠")
+st.set_page_config(page_title="AI Summarizer", layout="wide")
 
 st.markdown("""
 <style>
-.main {
-    background-color: #0E1117;
-    color: white;
+body {
+    background: #0a0a0a;
+    color: #ffffff;
+    font-family: 'Inter', sans-serif;
 }
-.stTextArea textarea {
-    background-color: #1c1e26;
-    color: white;
+
+.block-container {
+    padding: 2rem 4rem;
 }
-.stButton>button {
-    background-color: #4CAF50;
-    color: white;
-    border-radius: 10px;
-    padding: 10px;
+
+.hero-title {
+    font-size: 56px;
+    font-weight: 600;
+    letter-spacing: -1px;
 }
-.stDownloadButton>button {
-    background-color: #2196F3;
-    color: white;
-    border-radius: 10px;
+
+.hero-sub {
+    color: #a1a1a1;
+    font-size: 16px;
+    margin-bottom: 30px;
+}
+
+textarea {
+    background:#111 !important;
+    border-radius:14px !important;
+    border:1px solid #2a2a2a !important;
+    color:#fff !important;
+}
+
+.stButton > button {
+    background:#ffffff;
+    color:#000;
+    border-radius:999px;
+    padding:10px 24px;
+    border:none;
+}
+
+.stDownloadButton > button {
+    background:transparent;
+    border:1px solid #444;
+    color:#fff;
+    border-radius:999px;
+}
+
+.glass {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(12px);
+    border:1px solid rgba(255,255,255,0.1);
+    padding:20px;
+    border-radius:20px;
+    margin-top:20px;
+}
+
+.section {
+    margin-top:40px;
 }
 </style>
 """, unsafe_allow_html=True)
 
-st.title("🧠 AI Text Summarizer Pro")
-st.markdown("### ✨ No word limit • Free • Fast")
+st.markdown('<div class="hero-title">AI Summarizer</div>', unsafe_allow_html=True)
+st.markdown('<div class="hero-sub">Precision text summarization with clean structure.</div>', unsafe_allow_html=True)
 
-text = st.text_area("Enter your text here:")
+text = st.text_area("Enter text")
 
-uploaded_file = st.file_uploader("Or upload a file (.txt or .pdf)", type=["txt", "pdf"])
+uploaded_file = st.file_uploader("Upload (.txt / .pdf)", type=["txt", "pdf"])
 
 if uploaded_file is not None:
     if uploaded_file.type == "text/plain":
@@ -45,88 +82,94 @@ if uploaded_file is not None:
             if page.extract_text():
                 text += page.extract_text()
 
-summary_type = st.selectbox(
-    "Select summary type",
-    ["Short", "Medium", "Detailed"]
-)
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    summary_type = st.selectbox("Length", ["Short", "Medium", "Detailed"])
+
+with col2:
+    humanize = st.checkbox("Refine tone")
+
+with col3:
+    run = st.button("Generate")
 
 if summary_type == "Short":
     length = 2
 elif summary_type == "Medium":
     length = 5
 else:
-    length = 10   
+    length = 10
 
-humanize = st.checkbox("Make summary more human-like")
-
-if st.button("Summarize"):
+if run:
     if text:
+
         summary = summarize_text(text, length)
 
         if humanize:
             summary = humanize_text(summary)
 
-        st.markdown("## ✨ Summary Output")
-        st.success(summary)
+        st.markdown('<div class="section"></div>', unsafe_allow_html=True)
 
-        keywords = extract_keywords(text)
+        col1, col2 = st.columns([2,1])
 
-        st.markdown(f"""
-        <div style="
-            background-color:#1c1e26;
-            padding:15px;
-            border-radius:10px;
-            margin-top:10px;
-        ">
-        📊 <b>Original words:</b> {len(text.split())}<br><br>
-        ✂️ <b>Summary words:</b> {len(summary.split())}<br><br>
-        🔑 <b>Keywords:</b> {", ".join(keywords)}
-        </div>
-        """, unsafe_allow_html=True)
+        with col1:
+            st.markdown(f"""
+            <div class="glass">
 
-        title = generate_title(text)
-        st.write("📝 Suggested Title:", title)
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <b>Summary</b>
+                <button onclick="copyText()" 
+                    style="background:#fff;color:#000;border:none;padding:6px 14px;border-radius:999px;cursor:pointer;font-size:12px;">
+                    Copy
+                </button>
+            </div>
+
+            <p id="summary-text" style="margin-top:15px;">
+            {summary}
+            </p>
+
+            </div>
+
+            <script>
+            function copyText() {{
+                var text = document.getElementById("summary-text").innerText;
+                navigator.clipboard.writeText(text);
+            }}
+            </script>
+            """, unsafe_allow_html=True)
+
+        with col2:
+            keywords = extract_keywords(text)
+            title = generate_title(text)
+
+            st.markdown(f"""
+            <div class="glass">
+            <b>Insights</b><br><br>
+            Words (original): {len(text.split())}<br><br>
+            Words (summary): {len(summary.split())}<br><br>
+            Keywords: {", ".join(keywords)}<br><br>
+            Title: {title}
+            </div>
+            """, unsafe_allow_html=True)
 
         st.download_button("Download Summary", summary, file_name="summary.txt")
+
     else:
-        st.warning("Please enter some text or upload a file")
+        st.warning("Please provide input text.")
 
-st.divider()
-st.markdown("## ⚙️ How It Works")
+st.markdown(
+    """
+    <div style="text-align:center; margin-top:60px;">
+    <br><br><br>
+ Rahul Vommi
+ <br>
+        Check Out My_<a href="https://foliofyx.in/portfolio/rahulvommi"
+                  target="_blank"
+                  style="color:#bbb; text-decoration:underline;">
+                  Portfolio
+               </a>
 
-col1, col2, col3 = st.columns(3)
 
-with col1:
-    st.markdown("""
-    <div style='background-color:#1c1e26; padding:20px; border-radius:12px; text-align:center'>
-        <h3>📄 Input</h3>
-        <p><b>Paste text</b> or upload <b>.txt / .pdf</b> files</p>
-    </div>
-    """, unsafe_allow_html=True)
-
-with col2:
-    st.markdown("""
-    <div style='background-color:#1c1e26; padding:20px; border-radius:12px; text-align:center'>
-        <h3>🎯 Process</h3>
-        <p>Select <b>Short / Medium / Detailed</b> and click <b>Summarize</b></p>
-    </div>
-    """, unsafe_allow_html=True)
-
-with col3:
-    st.markdown("""
-    <div style='background-color:#1c1e26; padding:20px; border-radius:12px; text-align:center'>
-        <h3>🚀 Output</h3>
-        <p>Get <b>instant summary</b> with keywords & title</p>
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.markdown("""
-<hr style="margin-top:40px;">
-
-<div style="text-align:center; font-size:15px; color:#aaa;">
-    🚀 Built by <b>Rahul</b> | 
-    <a href="https://www.linkedin.com/in/vommi-raghavendra-srinivasa-rahul-5aa77b293" target="_blank" style="color:#4CAF50;">
-    LinkedIn Profile
-    </a>
-</div>
-""", unsafe_allow_html=True)
+    """,
+    unsafe_allow_html=True
+)
