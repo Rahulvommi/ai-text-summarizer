@@ -53,9 +53,9 @@ summary_type = st.selectbox(
 if summary_type == "Short":
     length = 2
 elif summary_type == "Medium":
-    length = 4
+    length = 5
 else:
-    length = 6
+    length = 10   
 
 humanize = st.checkbox("Make summary more human-like")
 
